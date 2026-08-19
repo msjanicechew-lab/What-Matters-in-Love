@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Matters Most to You in Love?</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --heading-navy: #0f172a;
+      
+      --accent-coral: #ff6b6b;
+      --accent-coral-light: #fff0f0;
+      
+      --cat-passion: #e11d48;
+      --cat-intimacy: #8b5cf6;
+      --cat-trust: #0284c7;
+      --cat-respect: #0d9488;
+      
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.35s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    .app-viewport {
+      width: 100%;
+      max-width: 960px;
+      min-height: 540px;
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding: 32px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--transition-normal), transform var(--transition-normal);
+    }
+
+    .screen.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .progress-container {
+      flex: 1;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background-color: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-coral), var(--cat-intimacy));
+      transition: width var(--transition-normal);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 8px;
+      color: var(--heading-navy);
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--accent-coral);
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 600px;
+      margin: 32px auto 0 auto;
+      width: 100%;
+    }
+
+    @media (min-width: 600px) {
+      .icon-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .icon-card {
+      background: var(--bg-color);
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+
+    .icon-card .emoji {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .icon-card .label {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .question-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--heading-navy);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 650px) {
+      .options-grid.two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .option-card {
+      background: var(--card-bg);
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-coral);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .option-card.selected {
+      border-color: var(--accent-coral);
+      background-color: var(--accent-coral-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .option-card .check-indicator {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      margin-right: 14px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .option-card.selected .check-indicator {
+      background: var(--accent-coral);
+      border-color: var(--accent-coral);
+    }
+
+    .option-card.selected .check-indicator::after {
+      content: "✓";
+      color: white;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .option-card .text {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .message-card {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .message-card .sender {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-coral);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .message-card .body {
+      font-style: italic;
+      color: var(--heading-navy);
+      font-size: 1.05rem;
+    }
+
+    .scale-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .scale-option-card {
+      background: var(--card-bg);
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+    }
+
+    .scale-option-card:hover {
+      border-color: var(--accent-coral);
+      transform: translateY(-1px);
+    }
+
+    .scale-option-card.selected {
+      border-color: var(--accent-coral);
+      background-color: var(--accent-coral-light);
+    }
+
+    .scale-label {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--heading-navy);
+      width: 150px;
+      flex-shrink: 0;
+    }
+
+    .scale-desc {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 600px) {
+      .profile-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .profile-card {
+      background: var(--card-bg);
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .profile-card:hover {
+      border-color: var(--accent-coral);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-card.selected {
+      border-color: var(--accent-coral);
+      background-color: var(--accent-coral-light);
+    }
+
+    .profile-card .tag {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent-coral);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .profile-card p {
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .app-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent-coral);
+      color: white;
+      margin-left: auto;
+    }
+
+    .btn-primary:hover {
+      background: #f05252;
+      box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .counter-badge {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-coral);
+      background: var(--accent-coral-light);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .results-container {
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .meters-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .meter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-color);
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+    }
+
+    .meter-label {
+      font-weight: 700;
+      font-size: 1rem;
+      width: 130px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dots-container {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      transition: background var(--transition-normal);
+    }
+
+    .meter-score {
+      font-weight: 800;
+      font-size: 1.1rem;
+      width: 40px;
+      text-align: right;
+    }
+
+    .cat-passion { color: var(--cat-passion); }
+    .cat-intimacy { color: var(--cat-intimacy); }
+    .cat-trust { color: var(--cat-trust); }
+    .cat-respect { color: var(--cat-respect); }
+
+    .priority-box {
+      background: var(--heading-navy);
+      color: white;
+      padding: 24px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .priority-box h3 {
+      color: var(--accent-coral);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .priority-box .title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .priority-box p {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .disclaimer-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+
+    <!-- 1. OPENING SCREEN -->
+    <section id="screen-intro" class="screen active">
+      <div style="margin: auto 0; text-align: center;">
+        <h1>WHAT MATTERS MOST TO YOU IN LOVE?</h1>
+        <p class="subtitle">Discover your top relationship requirement!</p>
+
+        <div class="icon-grid">
+          <div class="icon-card">
+            <span class="emoji">❤️</span>
+            <span class="label cat-passion">Passion</span>
+          </div>
+          <div class="icon-card">
+            <span class="emoji">💬</span>
+            <span class="label cat-intimacy">Intimacy</span>
+          </div>
+          <div class="icon-card">
+            <span class="emoji">🛡️</span>
+            <span class="label cat-trust">Trust</span>
+          </div>
+          <div class="icon-card">
+            <span class="emoji">🤝</span>
+            <span class="label cat-respect">Respect</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-footer">
+        <button class="btn btn-primary" onclick="startQuiz()">START QUIZ →</button>
+      </div>
+    </section>
+
+    <!-- 2. QUIZ SCREEN -->
+    <section id="screen-quiz" class="screen">
+      <div class="app-header">
+        <div class="progress-container">
+          <div class="progress-labels">
+            <span id="progress-text">Question 1 of 12</span>
+            <span id="progress-percent">8%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="progress-fill" class="progress-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="question-content">
+        <div id="question-title" class="question-title">Question Text</div>
+        <div id="question-body"></div>
+      </div>
+
+      <div class="app-footer">
+        <button id="btn-back" class="btn btn-secondary" onclick="prevQuestion()" style="visibility: hidden;">← BACK</button>
+        <span id="selection-counter" class="counter-badge" style="display: none;">Selected: 0 / 2</span>
+        <button id="btn-next" class="btn btn-primary" onclick="nextQuestion()" disabled>NEXT →</button>
+      </div>
+    </section>
+
+    <!-- 3. RESULTS SCREEN -->
+    <section id="screen-results" class="screen">
+      <div class="results-container">
+        <h1>YOUR LOVE PROFILE</h1>
+        <p class="subtitle">Here is what really matters to you in a relationship!</p>
+
+        <div class="meters-block">
+          <div class="meter-row">
+            <span class="meter-label cat-passion">❤️ PASSION</span>
+            <div class="dots-container" id="dots-passion"></div>
+            <span class="meter-score" id="score-passion">0/5</span>
+          </div>
+
+          <div class="meter-row">
+            <span class="meter-label cat-intimacy">💬 INTIMACY</span>
+            <div class="dots-container" id="dots-intimacy"></div>
+            <span class="meter-score" id="score-intimacy">0/5</span>
+          </div>
+
+          <div class="meter-row">
+            <span class="meter-label cat-trust">🛡️ TRUST</span>
+            <div class="dots-container" id="dots-trust"></div>
+            <span class="meter-score" id="score-trust">0/5</span>
+          </div>
+
+          <div class="meter-row">
+            <span class="meter-label cat-respect">🤝 RESPECT</span>
+            <div class="dots-container" id="dots-respect"></div>
+            <span class="meter-score" id="score-respect">0/5</span>
+          </div>
+        </div>
+
+        <div class="priority-box">
+          <h3>Your Strongest Relationship Priority</h3>
+          <div id="priority-title" class="title">...</div>
+          <p id="priority-desc">...</p>
+        </div>
+
+        <p class="disclaimer-text">
+          There is no "best" answer! This activity helps you understand what you value most in love.<br>
+          <em>This is for self-reflection and class discussion, not a scientific test.</em>
+        </p>
+      </div>
+
+      <div class="app-footer">
+        <button class="btn btn-primary" onclick="resetQuiz()">RETAKE QUIZ 🔄</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const state = {
+      currentQuestion: 0,
+      answers: {},
+      scores: { passion: 0, intimacy: 0, trust: 0, respect: 0 }
+    };
+
+    const scaleOptions = [
+      { val: 1, label: "1 — Not Needed", desc: "I do not need this in a relationship.", pts: 0 },
+      { val: 2, label: "2 — Low Priority", desc: "Nice to have, but not necessary.", pts: 0.5 },
+      { val: 3, label: "3 — Appreciated", desc: "I like it, but I am fine without it.", pts: 1 },
+      { val: 4, label: "4 — Important", desc: "This makes me feel truly cared for.", pts: 1.5 },
+      { val: 5, label: "5 — Must-Have!", desc: "An absolute must-have for me!", pts: 2 }
+    ];
+
+    const questions = [
+      {
+        id: 1,
+        title: "You spot someone attractive on campus and start talking. What makes your heart jump?",
+        type: "choice-two",
+        options: [
+          { text: "Electric sparks and instant romantic energy.", cat: "passion", pts: 2 },
+          { text: "Easy, deep conversation where we can talk for hours without feeling awkward.", cat: "intimacy", pts: 2 }
+        ]
+      },
+      {
+        id: 2,
+        title: "Imagine a fairy godmother offers to guarantee ONE thing in your relationship. What do you pick?",
+        type: "choice-two",
+        options: [
+          { text: "Excitement! Fun dates, romance, and zero boring moments.", cat: "passion", pts: 2 },
+          { text: "Loyalty! Knowing they will always keep their promises and never lie.", cat: "trust", pts: 2 }
+        ]
+      },
+      {
+        id: 3,
+        title: "Which compliment actually makes you feel better about yourself?",
+        type: "choice-two",
+        options: [
+          { text: "Knowing your partner finds you irresistibly attractive and wants you close.", cat: "passion", pts: 2 },
+          { text: "Knowing your partner respects your opinions, personal time, and boundaries.", cat: "respect", pts: 2 }
+        ]
+      },
+      {
+        id: 4,
+        title: "You had a terrible fight with your best friend and feel super upset. How should your partner step up?",
+        type: "choice-two",
+        options: [
+          { text: "Sit down with warm tea and listen patiently while you talk about your feelings.", cat: "intimacy", pts: 2 },
+          { text: "Drop everything and show up immediately because they promised to support you.", cat: "trust", pts: 2 }
+        ]
+      },
+      {
+        id: 5,
+        title: "What is your ultimate relationship goal?",
+        type: "choice-two",
+        options: [
+          { text: "Zero secrets! We share every single thought, secret, and update with each other.", cat: "intimacy", pts: 2 },
+          { text: "Healthy balance! We love each other, but we keep our own separate friends and space.", cat: "respect", pts: 2 }
+        ]
+      },
+      {
+        id: 6,
+        title: "Big drama! You and your partner disagree strongly about a major choice. How do they handle it?",
+        type: "choice-two",
+        options: [
+          { text: "Total honesty—they tell you the hard truth directly, even if it is uncomfortable.", cat: "trust", pts: 2 },
+          { text: "Total kindness—they express their opinion gently without making you feel bad.", cat: "respect", pts: 2 }
+        ]
+      },
+      {
+        id: 7,
+        title: "How much do you need this reaction?",
+        type: "likert",
+        targetCat: "respect",
+        scenario: {
+          sender: "SCENARIO 1: BAD EXAM DAY",
+          text: "You fail an important exam. Your partner says: 'One bad mark does not mean you are not smart. I know how hard you worked, and I believe in you.'"
+        }
+      },
+      {
+        id: 8,
+        title: "How much do you need this reaction?",
+        type: "likert",
+        targetCat: "intimacy",
+        scenario: {
+          sender: "SCENARIO 2: STRESSFUL WEEK",
+          text: "You both had a very stressful week. Your partner puts their phone away, orders food, and spends two hours just listening to you talk."
+        }
+      },
+      {
+        id: 9,
+        title: "How much do you need this reaction?",
+        type: "likert",
+        targetCat: "trust",
+        scenario: {
+          sender: "SCENARIO 3: PROJECT OVERLOAD",
+          text: "You feel overwhelmed by a big project due tomorrow. Your partner brings you snacks and helps complete a small task for you without asking for anything back."
+        }
+      },
+      {
+        id: 10,
+        title: "How much do you need this reaction?",
+        type: "likert",
+        targetCat: "passion",
+        scenario: {
+          sender: "SCENARIO 4: LONG REUNION",
+          text: "You haven't seen your partner for weeks during the holidays. When you meet again, they smile brightly and give you a long, warm hug."
+        }
+      },
+      {
+        id: 11,
+        title: "VIP PROTECTION: PICK ONLY TWO!",
+        subtitle: "Pick the TWO qualities you would protect at all costs:",
+        type: "multi-select",
+        limit: 2,
+        options: [
+          { id: "passion", label: "❤️ PASSION", desc: "Chemistry, romance, and exciting dates.", pts: 3 },
+          { id: "intimacy", label: "💬 INTIMACY", desc: "Deep emotional connection and feeling understood.", pts: 3 },
+          { id: "trust", label: "🛡️ TRUST", desc: "Honesty, safety, and keeping promises.", pts: 3 },
+          { id: "respect", label: "🤝 RESPECT", desc: "Freedom, equality, and respecting personal boundaries.", pts: 3 }
+        ]
+      },
+      {
+        id: 12,
+        title: "PICK YOUR REALITY: FOUR RELATIONSHIPS. NONE IS PERFECT.",
+        subtitle: "Which compromise can you live with?",
+        type: "profile-select",
+        options: [
+          { id: "passion", tag: "A — THE SPARK", desc: "Amazing chemistry and romance, but deep emotional talks rarely happen.", pts: 3 },
+          { id: "intimacy", tag: "B — THE SOULMATE", desc: "You can talk for hours, but the butterflies and romantic excitement are gone.", pts: 3 },
+          { id: "trust", tag: "C — THE SAFE ZONE", desc: "Super honest and reliable, but not very romantic or expressive.", pts: 3 },
+          { id: "respect", tag: "D — THE EQUAL PARTNER", desc: "Supports your freedom completely, but sometimes feels a bit distant.", pts: 3 }
+        ]
+      }
+    ];
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function startQuiz() {
+      state.currentQuestion = 0;
+      showScreen('screen-quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[state.currentQuestion];
+      const titleEl = document.getElementById('question-title');
+      const bodyEl = document.getElementById('question-body');
+      const nextBtn = document.getElementById('btn-next');
+      const backBtn = document.getElementById('btn-back');
+      const counterEl = document.getElementById('selection-counter');
+
+      const total = questions.length;
+      const current = state.currentQuestion + 1;
+      document.getElementById('progress-text').innerText = `Question ${current} of ${total}`;
+      document.getElementById('progress-fill').style.width = `${(current / total) * 100}%`;
+      document.getElementById('progress-percent').innerText = `${Math.round((current / total) * 100)}%`;
+
+      backBtn.style.visibility = state.currentQuestion > 0 ? 'visible' : 'hidden';
+      counterEl.style.display = 'none';
+
+      titleEl.innerText = q.title;
+      bodyEl.innerHTML = '';
+
+      const existingAns = state.answers[q.id];
+
+      if (q.type === 'multi-select') {
+        const selectedArr = existingAns || [];
+        nextBtn.disabled = (selectedArr.length !== q.limit);
+      } else {
+        nextBtn.disabled = (existingAns === undefined);
+      }
+
+      if (q.type === 'choice-two') {
+        const grid = document.createElement('div');
+        grid.className = 'options-grid two-col';
+
+        q.options.forEach((opt, idx) => {
+          const card = document.createElement('div');
+          card.className = `option-card ${existingAns === idx ? 'selected' : ''}`;
+          card.onclick = () => {
+            state.answers[q.id] = idx;
+            renderQuestion();
+          };
+          card.innerHTML = `
+            <div class="check-indicator"></div>
+            <div class="text">${opt.text}</div>
+          `;
+          grid.appendChild(card);
+        });
+        bodyEl.appendChild(grid);
+
+      } else if (q.type === 'likert') {
+        if (q.scenario) {
+          const scBox = document.createElement('div');
+          scBox.className = 'message-card';
+          scBox.innerHTML = `
+            <div class="sender">${q.scenario.sender}</div>
+            <div class="body">${q.scenario.text}</div>
+          `;
+          bodyEl.appendChild(scBox);
+        }
+
+        const scaleList = document.createElement('div');
+        scaleList.className = 'scale-list';
+
+        scaleOptions.forEach(opt => {
+          const card = document.createElement('div');
+          card.className = `scale-option-card ${existingAns === opt.val ? 'selected' : ''}`;
+          card.onclick = () => {
+            state.answers[q.id] = opt.val;
+            renderQuestion();
+          };
+          card.innerHTML = `
+            <div class="check-indicator"></div>
+            <div class="scale-label">${opt.label}</div>
+            <div class="scale-desc">${opt.desc}</div>
+          `;
+          scaleList.appendChild(card);
+        });
+
+        bodyEl.appendChild(scaleList);
+
+      } else if (q.type === 'multi-select') {
+        counterEl.style.display = 'inline-block';
+        const selectedArr = state.answers[q.id] || [];
+        counterEl.innerText = `Selected: ${selectedArr.length} / ${q.limit}`;
+
+        if (q.subtitle) {
+          const sub = document.createElement('p');
+          sub.style.cssText = 'text-align: center; color: var(--text-muted); margin-bottom: 16px; font-size: 0.95rem;';
+          sub.innerText = q.subtitle;
+          bodyEl.appendChild(sub);
+        }
+
+        const grid = document.createElement('div');
+        grid.className = 'options-grid two-col';
+
+        q.options.forEach(opt => {
+          const isSelected = selectedArr.includes(opt.id);
+          const card = document.createElement('div');
+          card.className = `option-card ${isSelected ? 'selected' : ''}`;
+          card.onclick = () => {
+            let currentSelections = state.answers[q.id] || [];
+            if (isSelected) {
+              currentSelections = currentSelections.filter(id => id !== opt.id);
+            } else {
+              if (currentSelections.length < q.limit) {
+                currentSelections.push(opt.id);
+              }
+            }
+            state.answers[q.id] = currentSelections;
+            renderQuestion();
+          };
+          card.innerHTML = `
+            <div class="check-indicator"></div>
+            <div>
+              <div style="font-weight: 700; color: var(--heading-navy);">${opt.label}</div>
+              <div class="text" style="font-size: 0.85rem; color: var(--text-muted);">${opt.desc}</div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+        bodyEl.appendChild(grid);
+
+      } else if (q.type === 'profile-select') {
+        if (q.subtitle) {
+          const sub = document.createElement('p');
+          sub.style.cssText = 'text-align: center; color: var(--text-muted); margin-bottom: 16px; font-size: 0.95rem;';
+          sub.innerText = q.subtitle;
+          bodyEl.appendChild(sub);
+        }
+
+        const grid = document.createElement('div');
+        grid.className = 'profile-grid';
+
+        q.options.forEach(opt => {
+          const card = document.createElement('div');
+          card.className = `profile-card ${existingAns === opt.id ? 'selected' : ''}`;
+          card.onclick = () => {
+            state.answers[q.id] = opt.id;
+            renderQuestion();
+          };
+          card.innerHTML = `
+            <div class="tag">${opt.tag}</div>
+            <p>${opt.desc}</p>
+          `;
+          grid.appendChild(card);
+        });
+        bodyEl.appendChild(grid);
+      }
+    }
+
+    function nextQuestion() {
+      if (state.currentQuestion < questions.length - 1) {
+        state.currentQuestion++;
+        renderQuestion();
+      } else {
+        calculateAndShowResults();
+      }
+    }
+
+    function prevQuestion() {
+      if (state.currentQuestion > 0) {
+        state.currentQuestion--;
+        renderQuestion();
+      }
+    }
+
+    function calculateAndShowResults() {
+      state.scores = { passion: 0, intimacy: 0, trust: 0, respect: 0 };
+
+      for (let i = 0; i < 6; i++) {
+        const q = questions[i];
+        const selectedIdx = state.answers[q.id];
+        if (selectedIdx !== undefined) {
+          const chosen = q.options[selectedIdx];
+          state.scores[chosen.cat] += chosen.pts;
+        }
+      }
+
+      for (let i = 6; i < 10; i++) {
+        const q = questions[i];
+        const val = state.answers[q.id];
+        if (val) {
+          const opt = scaleOptions.find(o => o.val === val);
+          if (opt) {
+            state.scores[q.targetCat] += opt.pts;
+          }
+        }
+      }
+
+      const q11Selections = state.answers[11] || [];
+      q11Selections.forEach(catId => {
+        state.scores[catId] += 3;
+      });
+
+      const q12Choice = state.answers[12];
+      if (q12Choice) {
+        state.scores[q12Choice] += 3;
+      }
+
+      const normalizedScores = normalizeScores(state.scores);
+      renderMeters(normalizedScores);
+      renderInterpretation(normalizedScores);
+
+      showScreen('screen-results');
+    }
+
+    function normalizeScores(raw) {
+      const vals = [raw.passion, raw.intimacy, raw.trust, raw.respect];
+      const min = Math.min(...vals);
+      const max = Math.max(...vals);
+
+      if (min === max) {
+        return { passion: 3, intimacy: 3, trust: 3, respect: 3 };
+      }
+
+      const scaled = {};
+      for (let cat in raw) {
+        let num = 1 + ((raw[cat] - min) / (max - min)) * 4;
+        scaled[cat] = Math.round(num);
+      }
+      return scaled;
+    }
+
+    function renderMeters(scores) {
+      const cats = [
+        { id: 'passion', colorClass: 'cat-passion' },
+        { id: 'intimacy', colorClass: 'cat-intimacy' },
+        { id: 'trust', colorClass: 'cat-trust' },
+        { id: 'respect', colorClass: 'cat-respect' }
+      ];
+
+      cats.forEach(c => {
+        const score = scores[c.id];
+        const container = document.getElementById(`dots-${c.id}`);
+        const scoreText = document.getElementById(`score-${c.id}`);
+
+        container.innerHTML = '';
+        scoreText.innerText = `${score} / 5`;
+
+        for (let i = 1; i <= 5; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'dot';
+          if (i <= score) {
+            dot.style.background = getComputedStyle(document.documentElement).getPropertyValue(`--${c.colorClass}`).trim();
+          }
+          container.appendChild(dot);
+        }
+      });
+    }
+
+    function renderInterpretation(scores) {
+      const titleEl = document.getElementById('priority-title');
+      const descEl = document.getElementById('priority-desc');
+
+      const maxVal = Math.max(scores.passion, scores.intimacy, scores.trust, scores.respect);
+      const highest = Object.keys(scores).filter(k => scores[k] === maxVal);
+
+      const interpretations = {
+        passion: "You value attraction, physical chemistry, and romance. You want a relationship that feels exciting and fun.",
+        intimacy: "You value emotional closeness. Sharing feelings, opening up, and having deep conversations matter most to you.",
+        trust: "You value honesty, safety, and reliability. Knowing you can depend on your partner matters more than romantic gestures.",
+        respect: "You value equality, personal space, and mutual support. Feeling accepted and allowed to be yourself is key for you."
+      };
+
+      if (highest.length === 1) {
+        const cat = highest[0];
+        titleEl.innerText = cat.toUpperCase();
+        descEl.innerText = interpretations[cat];
+      } else if (highest.length === 2) {
+        titleEl.innerText = `${highest[0].toUpperCase()} + ${highest[1].toUpperCase()}`;
+        descEl.innerText = `${interpretations[highest[0]]} ${interpretations[highest[1]]}`;
+      } else {
+        titleEl.innerText = "BALANCED LOVE METER";
+        descEl.innerText = "Your Love Meter is balanced. You value several aspects of romantic relationships equally.";
+      }
+    }
+
+    function resetQuiz() {
+      state.currentQuestion = 0;
+      state.answers = {};
+      state.scores = { passion: 0, intimacy: 0, trust: 0, respect: 0 };
+      showScreen('screen-intro');
+    }
+  </script>
+</body>
+</html>
